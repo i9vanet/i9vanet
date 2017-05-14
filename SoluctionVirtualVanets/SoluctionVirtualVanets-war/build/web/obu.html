@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    </head>
+    <body>
+        <h1>Collaborative Whiteboard App</h1>
+        <div id="output"></div>
+        <script>
+            var websocket;
+            var output = document.getElementById("output");
+            var idDevice = "";
+
+            function onError(evt) {
+                writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+            }
+
+
+            function writeToScreen(message) {
+                output.innerHTML += message + "<br>";
+            }
+
+            function onOpen() {
+                writeToScreen("Connected to " + wsUri);
+            }
+
+            function sendText(json) {
+                console.log("sending text: " + json);
+                //alert(json);
+                websocket.send(json);
+            }
+
+            function onMessage(evt) {
+                console.log("received: " + evt.data);
+                writeToScreen(evt.data);
+            }
+
+            function connecting() {
+                if (websocket != null) {
+                    return;
+                } else {
+                    idDevice = new Date().getTime() + Math.floor((Math.random() * 100) + 1);
+                    var wsUri = "ws://localhost:8080/SoluctionVirtualVanets-war/svvws?type=OBU&idDevice=" + idDevice;
+                    writeToScreen(wsUri);
+                    websocket = new WebSocket(wsUri);
+                    websocket.onerror = function (evt) {
+                        onError(evt)
+                    };
+
+                    websocket.onopen = function (evt) {
+                        onOpen(evt);
+                    };
+                    websocket.onmessage = function (evt) {
+                        onMessage(evt);
+                    };
+
+                    websocket.onclose = function () {
+                        //try to reconnect in 5 seconds
+                        websocket = null;
+                        btnSend.disabled = "true";
+                        writeToScreen('<span style="color: red;">Re-Conectando em 5 segundos</span> ');
+                        setTimeout(function () {
+                            connecting()
+
+                        }, 5000);
+                    };
+                }
+            }
+
+            function sendMessage() {
+
+                var operationJson = '{"idDevice":"[id]","operationCode":[operation],"type":"OBU","latitude":[latitude],"longitude":[longitude],"altitude":[altitude],"speed":[speed],"message":"[message]"}';
+                //var id = document.form1.idDevice.value;
+                //var id = new Date().getTime();
+                var lat = document.form1.latitude.value;
+                var lon = document.form1.longitude.value;
+                var alt = document.form1.altitude.value;
+                var spe = document.form1.speed.value;
+                var oper = document.form1.operation.value;
+                var msg = document.form1.message.value;
+
+                operationJson = operationJson.replace('[id]', idDevice).replace('[operation]', oper).replace('[latitude]', lat).replace('[longitude]', lon).replace('[altitude]', alt)
+                        .replace('[speed]', spe).replace('[message]', msg);
+                sendText(operationJson);
+            }
+
+        </script>        
+
+        <form name="form1">
+            <!--Id: <input name="idDevice" onclick="this.value = new Date().getTime()"/><br/-->
+            Latitude: <input name="latitude" value="-10.43567332"/><br/>
+            Longitude:<input name="longitude" value="-37.12343"/><br/>
+            Altitude: <input name="altitude" value="0"/><br/>
+            Speed <input name="speed" value="60"/><br/>
+            Operation <select name="operation">
+                <option value="0" >LoopBack</option>
+                <option value="10" >Send Movement</option>
+                <option value="40" selected="selected">Send Message</option>
+                <option value="50">Disconect</option>
+            </select><br/>
+            <!--input name="operation" value="10"/><br/-->
+            Message <input name="message" value=""/><br/>            
+            <input id="btnConnect" name="connect" value="Connect" type="button" onclick="connecting()"/><br/>
+            <input id="btnSend"  name="send" value="Enviar MSG" type="button" onclick="sendMessage()"/><br/>
+        </form>
+    </body>
+</html>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.j2ee.ejbjarproject</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/j2ee-ejbjarproject/3">
+            <name>SVVCommon</name>
+            <minimum-ant-version>1.6.5</minimum-ant-version>
+            <included-library dirs="200">file.reference.httpclient-4.0.3.jar</included-library>
+            <included-library dirs="200">file.reference.apache-httpcomponents-httpcore.jar</included-library>
+            <included-library dirs="200">file.reference.gson-2.2.4.jar</included-library>
+            <included-library dirs="200">file.reference.c3p0-0.9.5.2.jar</included-library>
+            <included-library dirs="200">file.reference.c3p0-oracle-thin-extras-0.9.5.2.jar</included-library>
+            <included-library dirs="200">file.reference.mchange-commons-java-0.2.11.jar</included-library>
+            <included-library dirs="200">file.reference.jts-1.13.jar</included-library>
+            <source-roots>
+                <root id="src.dir" name="Pacotes de Códigos-fonte"/>
+            </source-roots>
+            <test-roots>
+                <root id="test.src.dir" name="Pacotes de Teste"/>
+            </test-roots>
+        </data>
+    </configuration>
+</project>
